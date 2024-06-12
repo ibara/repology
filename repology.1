@@ -1,0 +1,143 @@
+.\"
+.\" repology - Command line interface to Repology.org
+.\"
+.\" Copyright (c) 2024 Brian Callahan <bcallah@openbsd.org>
+.\"
+.\" Permission to use, copy, modify, and distribute this software for any
+.\" purpose with or without fee is hereby granted, provided that the above
+.\" copyright notice and this permission notice appear in all copies.
+.\"
+.\" THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+.\" WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+.\" MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+.\" ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+.\" WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+.\" ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+.\" OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+.\"
+.Dd June 12, 2024
+.Dt REPOLOGY 1
+.Os
+.Sh NAME
+.Nm repology
+.Nd command line interface to Repology.org
+.Sh SYNOPSIS
+.Nm
+.Op options
+.Op Ar package ...
+.Sh DESCRIPTION
+.Nm
+is a utility that retrieves package information from Repology.org.
+.Pp
+By default,
+.Nm
+retrieves information for
+.Ox
+ports, unless you are on
+.Fx
+or
+.Nx ,
+in which case
+.Nm
+will retrieve information for
+.Fx
+ports or pkgsrc, respectively.
+.Pp
+.Nm
+returns information in the following format:
+.Dl Port category/port name
+.Dl Port version (green if up-to-date, red if not)
+.Dl Latest version
+.Dl Maintainer email address
+.Pp
+Output is sorted by port category,
+then port name.
+.Pp
+As per the API documentation,
+.Nm
+returns up to 200 items in a single API call.
+.Pp
+The options are as follows:
+.Bl -tag -width Ds
+.It Fl -repo Ar REPO
+Override default repository selection with
+.Ar REPO .
+.It Fl -begin Ar PROJECT
+Get up to 200 projects starting with
+.Ar PROJECT .
+.It Fl -end Ar PROJECT
+Get up to 200 projects ending with
+.Ar PROJECT .
+.It Fl -search Ar NAME
+Project name substring to look for.
+.It Fl -maintainer Ar EMAIL
+Return projects maintained by specified
+.Ar EMAIL .
+.It Fl -category Ar NAME
+Return projects in specified category.
+.It Fl -inrepo Ar REPO
+Return projects present in specified
+.Ar REPO .
+.It Fl -notinrepo Ar REPO
+Return projects absent in specified
+.Ar REPO .
+.It Fl -repos Ar NUMBER
+Return projects present in specified
+.Ar NUMBER
+of repositories.
+Exact values and open/closed ranges are allowed,
+.Em e.g. ,
+1, 5-, -5, 2-7.
+.It Fl -families Ar NUMBER
+Return projects present in specified
+.Ar NUMBER
+of repository families.
+.It Fl -repos_newest Ar NUMBER
+Return projects which are up to date in the specified
+.Ar NUMBER
+of repositories.
+.It Fl -families_newest Ar NUMBER
+Return projects which are up to date in the specified
+.Ar NUMBER
+of repository families.
+.It Fl -newest
+Return only packages marked newest.
+.It Fl -outdated
+Return only packages marked outdated.
+.It Fl -problematic
+Return only packages marked problematic.
+.It Fl -sort_package
+Sorts output by package name instead of port category/port name.
+Prepends output with package name.
+.It Fl -version
+Print version information and exit.
+.It Fl -help
+Print help information and exit.
+.El
+.Sh EXIT STATUS
+The
+.Nm
+utility exits 0 on success, and >0 if an error occurs.
+.Sh EXAMPLES
+Get information on the Digital Mars D compiler:
+.Pp
+.Dl repology dmd
+.Pp
+Get 200 items from pkgsrc:
+.Pp
+.Dl repology --repo pkgsrc
+.Pp
+Get information about both Chrome and Firefox from
+.Fx
+ports:
+.Pp
+.Dl repology --repo freebsd chromium firefox
+.Pp
+Get up to 200 packages maintained by ports@openbsd.org,
+starting with coreutils:
+.Pp
+.Dl repology --maintainer ports@openbsd.org --begin coreutils
+.Sh AUTHORS
+.Nm
+was written by
+.An Brian Callahan Aq Mt bcallah@openbsd.org .
