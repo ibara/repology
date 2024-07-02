@@ -82,7 +82,7 @@ void main(string[] args)
     }
 
     if (v) {
-        writeln("1.0.0 (12 Jun 2024)");
+        writeln("1.1.0 (02 Jul 2024)");
         return;
     }
 
@@ -138,19 +138,19 @@ void main(string[] args)
     if (options.newest) {
         if (!first)
             query ~= "&";
-        query ~= "newest=on";
+        query ~= "newest=1";
         first = false;
     }
     if (options.outdated) {
         if (!first)
             query ~= "&";
-        query ~= "outdated=on";
+        query ~= "outdated=1";
         first = false;
     }
     if (options.problematic) {
         if (!first)
             query ~= "&";
-        query ~= "problematic=on";
+        query ~= "problematic=1";
         first = false;
     }
 
@@ -196,12 +196,19 @@ string processSingle(JSONValue json, Options options)
     bool first = true;
 
     foreach (obj; json.array) {
-        if (obj["repo"].str != options.repo) {
-            if (obj["status"].str == "newest")
-                latest = obj["version"].str;
-            continue;
+        switch (obj["status"].str) {
+        case "newest":
+        case "devel":
+        case "unique":
+        case "noscheme":
+        case "rolling":
+            latest = obj["version"].str;
+            break;
+        default:
+            break;
         }
-        j ~= obj;
+        if (obj["repo"].str == options.repo)
+            j ~= obj;
     }
 
     foreach (obj; j) {
@@ -212,7 +219,33 @@ string processSingle(JSONValue json, Options options)
         if (options.sort_package)
             info ~= obj["binname"].str ~ " ";
         info ~= obj["srcname"].str ~ " ";
-        string color = obj["status"].str == "newest" ? "32" : "31";
+        string color;
+        switch (obj["status"].str) {
+        case "newest":
+            color = "32";
+            break;
+        case "outdated":
+            color = "31";
+            break;
+        case "devel":
+        case "unique":
+            color = "36";
+            break;
+        case "legacy":
+        case "incorrect":
+            color = "33";
+            break;
+        case "noscheme":
+        case "rolling":
+            color = "35";
+            break;
+        case "untrusted":
+        case "ignored":
+            color = "34";
+            break;
+        default:
+            color = "32";
+        }
         string ver = "\033[" ~ color ~ "m" ~ obj["version"].str ~ "\033[0m";
         string maintainer = "";
         auto maintainers = obj["maintainers"].array;
