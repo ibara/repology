@@ -1,0 +1,13 @@
+{
+	"authors": [
+		"Brian Callahan"
+	],
+	"copyright": "Copyright © 2024, Brian Callahan",
+	"description": "CLI utility for Repology.org",
+	"license": "ISC",
+	"name": "repology",
+	"targetType": "executable",
+	"sourcePaths": [
+		"."
+	]
+}
