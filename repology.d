@@ -40,7 +40,8 @@ struct Options
     bool newest,
          outdated,
          problematic,
-         sort_package;
+         sort_package,
+         vers;
 }
 
 void main(string[] args)
@@ -50,7 +51,6 @@ void main(string[] args)
     string[] pkgs;
     string uri = "https://repology.org/api/v1/project";
     string[string] queryParts = null;
-    bool v;
 
     version (FreeBSD) options.repo = "freebsd";
     else version (NetBSD) options.repo = "pkgsrc_current";
@@ -74,7 +74,7 @@ void main(string[] args)
         "outdated", "boolean", &options.outdated,
         "problematic", "boolean", &options.problematic,
         "sort_package", "boolean", &options.sort_package,
-        "version", "Print version information.", &v
+        "version", "Print version information.", &options.vers
     );
 
     if (opts.helpWanted) {
@@ -83,77 +83,84 @@ void main(string[] args)
         return;
     }
 
-    if (v) {
-        writeln("1.1.0 (02 Jul 2024)");
+    if (options.vers) {
+        writeln("1.2.0 (04 Jul 2024)");
         return;
     }
 
     if (options.repo == "pkgsrc")
         options.repo = "pkgsrc_current";
 
+    if (!options.inrepo)
+        options.inrepo = options.repo;
+
     enum queryOptions = [__traits(allMembers, Options)]
         .filter!(a => !["repo", "begin", "end", "repos", "sort_package"].canFind(a));
     static foreach (member; queryOptions) {
         if (mixin(`options.` ~ member)) {
             alias T = typeof(mixin(`options.` ~ member));
-            static if (is(T == bool)) {
+            static if (is(T == bool))
                 queryParts[member] = "1";
-            } else {
+            else
                 queryParts[member] = mixin(`options.` ~ member);
-            }
         }
     }
 
     string query = "?" ~ queryParts.byKeyValue.map!(a => a.key ~ "=" ~ a.value).join("&");
     if (args.length == 1) {
-        if (query == "?")
-            query ~= "inrepo=" ~ options.repo;
         uri ~= "s/";
         if (options.begin)
             uri ~= options.begin ~ "/";
         else if (options.end)
             uri ~= ".." ~ options.end ~ "/";
-        auto resMulti = get(uri ~ query);
-        json = parseJSON(resMulti);
-        pkgs = processMulti(json, options);
+        auto res = get(uri ~ query);
+        json = parseJSON(res);
+        foreach (obj; json.object)
+            pkgs ~= process(obj, options);
+        pkgs.sort;
         foreach (pkg; pkgs)
             writeln(pkg);
     } else {
         foreach (arg; args[1 .. $]) {
             auto res = get(uri ~ "/" ~ arg ~ query);
             json = parseJSON(res);
-            string pkg = processSingle(json, options);
-            writeln(pkg);
+            string pkg = process(json, options);
+            if (!pkg.empty)
+                writeln(pkg);
         }
     }
 }
 
-string[] processMulti(JSONValue json, Options options)
-{
-    string[] ret;
-
-    foreach (obj; json.object)
-        ret ~= processSingle(obj, options);
-
-    ret.sort;
-
-    return ret;
-}
-
-string processSingle(JSONValue json, Options options)
+string process(JSONValue json, Options options)
 {
     JSONValue[] j;
     string info, latest;
-    bool first = true;
+    bool first = true, havelatest;
 
     foreach (obj; json.array) {
         switch (obj["status"].str) {
         case "newest":
+            latest = obj["version"].str;
+            havelatest = true;
+            break;
         case "devel":
         case "unique":
+            if (!havelatest) {
+                latest = obj["version"].str;
+                havelatest = true;
+            }
+            break;
         case "noscheme":
+            if (!havelatest) {
+                latest = "noscheme";
+                havelatest = true;
+            }
+            break;
         case "rolling":
-            latest = obj["version"].str;
+            if (!havelatest) {
+                latest = "rolling";
+                havelatest = true;
+            }
             break;
         default:
             break;
@@ -183,13 +190,13 @@ string processSingle(JSONValue json, Options options)
             color = "36";
             break;
         case "legacy":
-        case "incorrect":
             color = "33";
             break;
         case "noscheme":
         case "rolling":
             color = "35";
             break;
+        case "incorrect":
         case "untrusted":
         case "ignored":
             color = "34";

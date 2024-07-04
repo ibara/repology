@@ -15,7 +15,7 @@
 .\" ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 .\" OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 .\"
-.Dd July 2, 2024
+.Dd July 4, 2024
 .Dt REPOLOGY 1
 .Os
 .Sh NAME
@@ -78,6 +78,13 @@ Return projects in specified category.
 .It Fl -inrepo Ar REPO
 Return projects present in specified
 .Ar REPO .
+If this option is not issued,
+.Ar REPO
+will be set to the value of
+.Fl -repo
+or the default repository if the
+.Fl -repo
+option is also not issued.
 .It Fl -notinrepo Ar REPO
 Return projects absent in specified
 .Ar REPO .
@@ -85,9 +92,12 @@ Return projects absent in specified
 Return projects present in specified
 .Ar NUMBER
 of repositories.
-Exact values and open/closed ranges are allowed,
+For all options that take a
+.Ar NUMBER
+argument,
+exact values and open/closed ranges are allowed,
 .Em e.g. ,
-1, 5-, -5, 2-7.
+1, 5-, -3, 2-7.
 .It Fl -families Ar NUMBER
 Return projects present in specified
 .Ar NUMBER
@@ -107,16 +117,15 @@ Return only packages marked outdated.
 .It Fl -problematic
 Return only packages marked problematic.
 .It Fl -sort_package
-Sorts output by package name instead of port category/port name.
-Prepends output with package name.
+Sort output by package name instead of port category/port name.
+Prepend output with package name.
 .It Fl -version
 Print version information and exit.
 .It Fl -help
 Print help information and exit.
 .El
 .Pp
-The version of the package in the target repo is colored based on
-its status.
+Package version is colored based on its status.
 The colors are as follows:
 .Bl -tag -width Ds
 .It Green
@@ -126,11 +135,11 @@ The package is outdated.
 .It Cyan
 The package is either a development version or unique to this repo.
 .It Yellow
-The package is either a legacy version or incorrect.
+The package is a legacy version.
 .It Magenta
 The package has no known versioning scheme or is a rolling release.
 .It Blue
-The package version is untrusted or otherwise ignored.
+The package version is incorrect, untrusted, or otherwise ignored.
 .El
 .Sh EXIT STATUS
 The

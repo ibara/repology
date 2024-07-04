@@ -4,7 +4,7 @@ PREFIX ?=	/usr/local
 MANDIR ?=	${PREFIX}
 
 DMD ?=		dmd
-DFLAGS ?=	-O -release -inline
+DFLAGS ?=	-O -release -inline -preview=dip1000
 
 PROG =	repology
 
