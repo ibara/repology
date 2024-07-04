@@ -18,6 +18,8 @@ import std.stdio;
 import std.algorithm;
 import std.getopt;
 import std.json;
+import std.meta;
+import std.range;
 import std.net.curl;
 
 struct Options
@@ -47,8 +49,8 @@ void main(string[] args)
     JSONValue json;
     string[] pkgs;
     string uri = "https://repology.org/api/v1/project";
-    string query = "?";
-    bool first = true, v;
+    string[string] queryParts = null;
+    bool v;
 
     version (FreeBSD) options.repo = "freebsd";
     else version (NetBSD) options.repo = "pkgsrc_current";
@@ -89,71 +91,20 @@ void main(string[] args)
     if (options.repo == "pkgsrc")
         options.repo = "pkgsrc_current";
 
-    if (options.search) {
-        query ~= "search=" ~ options.search;
-        first = false;
-    }
-    if (options.maintainer) {
-        if (!first)
-            query ~= "&";
-        query ~= "maintainer=" ~ options.maintainer;
-        first = false;
-    }
-    if (options.category) {
-        if (!first)
-            query ~= "&";
-        query ~= "category=" ~ options.category;
-        first = false;
-    }
-    if (options.inrepo) {
-        if (!first)
-            query ~= "&";
-        query ~= "inrepo=" ~ options.inrepo;
-        first = false;
-    }
-    if (options.notinrepo) {
-        if (!first)
-            query ~= "&";
-        query ~= "notinrepo=" ~ options.notinrepo;
-        first = false;
-    }
-    if (options.families) {
-        if (!first)
-            query ~= "&";
-        query ~= "families=" ~ options.families;
-        first = false;
-    }
-    if (options.repos_newest) {
-        if (!first)
-            query ~= "&";
-        query ~= "repos_newest=" ~ options.repos_newest;
-        first = false;
-    }
-    if (options.families_newest) {
-        if (!first)
-            query ~= "&";
-        query ~= "families_newest=" ~ options.families_newest;
-        first = false;
-    }
-    if (options.newest) {
-        if (!first)
-            query ~= "&";
-        query ~= "newest=1";
-        first = false;
-    }
-    if (options.outdated) {
-        if (!first)
-            query ~= "&";
-        query ~= "outdated=1";
-        first = false;
-    }
-    if (options.problematic) {
-        if (!first)
-            query ~= "&";
-        query ~= "problematic=1";
-        first = false;
+    enum queryOptions = [__traits(allMembers, Options)]
+        .filter!(a => !["repo", "begin", "end", "repos", "sort_package"].canFind(a));
+    static foreach (member; queryOptions) {
+        if (mixin(`options.` ~ member)) {
+            alias T = typeof(mixin(`options.` ~ member));
+            static if (is(T == bool)) {
+                queryParts[member] = "1";
+            } else {
+                queryParts[member] = mixin(`options.` ~ member);
+            }
+        }
     }
 
+    string query = "?" ~ queryParts.byKeyValue.map!(a => a.key ~ "=" ~ a.value).join("&");
     if (args.length == 1) {
         if (query == "?")
             query ~= "inrepo=" ~ options.repo;
