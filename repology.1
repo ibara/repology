@@ -15,7 +15,7 @@
 .\" ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 .\" OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 .\"
-.Dd July 4, 2024
+.Dd July 5, 2024
 .Dt REPOLOGY 1
 .Os
 .Sh NAME
@@ -45,8 +45,9 @@ ports or pkgsrc, respectively.
 .Pp
 .Nm
 returns information in the following format:
+.Pp
 .Dl Port category/port name
-.Dl Port version
+.Dl Package version
 .Dl Latest version
 .Dl Maintainer email address
 .Pp
@@ -119,6 +120,13 @@ Return only packages marked problematic.
 .It Fl -sort_package
 Sort output by package name instead of port category/port name.
 Prepend output with package name.
+.It Fl -all
+Display package information for all known repositories in the following format:
+.Pp
+.Dl Repository
+.Dl Package name
+.Dl Package version
+.Dl Latest version
 .It Fl -version
 Print version information and exit.
 .It Fl -help
@@ -146,9 +154,13 @@ The
 .Nm
 utility exits 0 on success, and >0 if an error occurs.
 .Sh EXAMPLES
-Get information on the Digital Mars D compiler:
+Get information on the Digital Mars D compiler from the default repository:
 .Pp
 .Dl repology dmd
+.Pp
+Get information on the Digital Mars D compiler from all repositories:
+.Pp
+.Dl repology --all dmd
 .Pp
 Get 200 items from pkgsrc:
 .Pp

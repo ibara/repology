@@ -36,8 +36,11 @@ $ sudo make install
 
 Usage examples
 --------------
-Get information about the Digital Mars D compiler:
+Get information on the Digital Mars D compiler from the default repository:
 * `repology dmd`
+
+Get information on the Digital Mars D compiler from all repositories:
+* `repology --all dmd`
 
 Get 200 items from pkgsrc:
 * `repology --repo pkgsrc`

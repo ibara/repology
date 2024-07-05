@@ -41,6 +41,7 @@ struct Options
          outdated,
          problematic,
          sort_package,
+         all,
          vers;
 }
 
@@ -74,6 +75,7 @@ void main(string[] args)
         "outdated", "boolean", &options.outdated,
         "problematic", "boolean", &options.problematic,
         "sort_package", "boolean", &options.sort_package,
+        "all", "boolean", &options.all,
         "version", "Print version information.", &options.vers
     );
 
@@ -84,15 +86,17 @@ void main(string[] args)
     }
 
     if (options.vers) {
-        writeln("1.2.0 (04 Jul 2024)");
+        writeln("1.3.0 (05 Jul 2024)");
         return;
     }
 
     if (options.repo == "pkgsrc")
         options.repo = "pkgsrc_current";
 
-    if (!options.inrepo)
-        options.inrepo = options.repo;
+    if (!options.all) {
+        if (!options.inrepo)
+            options.inrepo = options.repo;
+    }
 
     enum queryOptions = [__traits(allMembers, Options)]
         .filter!(a => !["repo", "begin", "end", "repos", "sort_package"].canFind(a));
@@ -117,25 +121,26 @@ void main(string[] args)
         json = parseJSON(res);
         foreach (obj; json.object)
             pkgs ~= process(obj, options);
-        pkgs.sort;
-        foreach (pkg; pkgs)
-            writeln(pkg);
     } else {
         foreach (arg; args[1 .. $]) {
             auto res = get(uri ~ "/" ~ arg ~ query);
             json = parseJSON(res);
-            string pkg = process(json, options);
-            if (!pkg.empty)
-                writeln(pkg);
+            pkgs ~= process(json, options);
         }
+    }
+    pkgs.sort;
+    foreach (pkg; pkgs) {
+        if (!pkg.empty)
+            writeln(pkg);
     }
 }
 
-string process(JSONValue json, Options options)
+string[] process(JSONValue json, Options options)
 {
     JSONValue[] j;
-    string info, latest;
-    bool first = true, havelatest;
+    string[] info;
+    string latest;
+    bool havelatest;
 
     foreach (obj; json.array) {
         switch (obj["status"].str) {
@@ -165,18 +170,25 @@ string process(JSONValue json, Options options)
         default:
             break;
         }
-        if (obj["repo"].str == options.repo)
+        if (options.all) {
             j ~= obj;
+        } else {
+            if (obj["repo"].str == options.repo)
+                j ~= obj;
+        }
     }
 
     foreach (obj; j) {
-        if (!first)
-            info ~= "\n";
-        if (!options.repo)
-            info ~= obj["repo"].str ~ " ";
-        if (options.sort_package)
-            info ~= obj["binname"].str ~ " ";
-        info ~= obj["srcname"].str ~ " ";
+        string tmp;
+        if (options.all) {
+            tmp ~= obj["repo"].str ~ " ";
+            tmp ~= obj["visiblename"].str ~ " ";
+        }
+        if (!options.all) {
+            if (options.sort_package)
+                tmp ~= obj["binname"].str ~ " ";
+            tmp ~= obj["srcname"].str ~ " ";
+        }
         string color;
         switch (obj["status"].str) {
         case "newest":
@@ -205,15 +217,19 @@ string process(JSONValue json, Options options)
             color = "32";
         }
         string ver = "\033[" ~ color ~ "m" ~ obj["version"].str ~ "\033[0m";
-        string maintainer = "";
-        auto maintainers = obj["maintainers"].array;
-        foreach (i; 0 .. maintainers.length) {
-            maintainer ~= maintainers[i].str;
-            if (i < maintainers.length - 1)
-                maintainer ~= " ";
+        if (!options.all) {
+            string maintainer = "";
+            auto maintainers = obj["maintainers"].array;
+            foreach (i; 0 .. maintainers.length) {
+                maintainer ~= maintainers[i].str;
+                if (i < maintainers.length - 1)
+                    maintainer ~= " ";
+            }
+            tmp ~= ver ~ " " ~ latest ~ " " ~ maintainer;
+        } else {
+            tmp ~= ver ~ " " ~ latest;
         }
-        info ~= ver ~ " " ~ latest ~ " " ~ maintainer;
-        first = false;
+        info ~= tmp;
     }
 
     return info;
