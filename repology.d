@@ -55,6 +55,7 @@ void main(string[] args)
 
     version (FreeBSD) options.repo = "freebsd";
     else version (NetBSD) options.repo = "pkgsrc_current";
+    else version (OSX) options.repo = "homebrew";
     else options.repo = "openbsd";
 
     auto opts = getopt(
@@ -86,7 +87,7 @@ void main(string[] args)
     }
 
     if (options.vers) {
-        writeln("1.3.0 (05 Jul 2024)");
+        writeln("1.4.0 (21 Dec 2024)");
         return;
     }
 
@@ -198,6 +199,7 @@ string[] process(JSONValue json, Options options)
             color = "31";
             break;
         case "devel":
+        case "rolling":
         case "unique":
             color = "36";
             break;
@@ -205,7 +207,6 @@ string[] process(JSONValue json, Options options)
             color = "33";
             break;
         case "noscheme":
-        case "rolling":
             color = "35";
             break;
         case "incorrect":
@@ -217,7 +218,7 @@ string[] process(JSONValue json, Options options)
             color = "32";
         }
         string ver = "\033[" ~ color ~ "m" ~ obj["version"].str ~ "\033[0m";
-        if (!options.all) {
+        if (!options.all && options.repo != "homebrew") {
             string maintainer = "";
             auto maintainers = obj["maintainers"].array;
             foreach (i; 0 .. maintainers.length) {

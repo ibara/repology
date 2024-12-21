@@ -1,0 +1,57 @@
+commit 428f5ae73bf5342c315e7e74883a5341deba59ac
+Author: Brian Callahan <bcallah@openbsd.org>
+Date:   Sat Dec 21 11:53:43 2024 -0500
+
+    Repology 1.4.0
+    Add support for macOS, defaulting to Homebrew
+
+commit e332286e6798fa6cc0dd41c21b9c6dcb81493ba8
+Author: Brian Callahan <bcallah@openbsd.org>
+Date:   Fri Jul 5 10:34:37 2024 -0400
+
+    Repology 1.3.0
+    Add an --all option that displays information about packages from
+    all known repositories.
+
+commit d4e08be2e83df4accdca8b2ffcb50edf23283843
+Author: Brian Callahan <bcallah@openbsd.org>
+Date:   Thu Jul 4 18:41:43 2024 -0400
+
+    Add a dub.json so repology can be published in code.dlang.org
+
+commit 291dc269dd32a8f091af5a1c71ca0987c4c85bdc
+Author: Brian Callahan <bcallah@openbsd.org>
+Date:   Thu Jul 4 17:33:46 2024 -0400
+
+    Release version 1.2.0
+    Fix some bugs that sometimes caused the most recent known version
+    across all repos to be displayed incorrectly.
+    Small improvements on overall display.
+
+commit 39269e26c2af41c27fa157c606e16f2dbd8d0824
+Merge: a89109c 19d3f58
+Author: Brian Callahan <ibara@users.noreply.github.com>
+Date:   Thu Jul 4 16:39:48 2024 -0400
+
+    Merge pull request #1 from FeepingCreature/main
+    
+    Golf options parsing using compile-time introspection.
+
+commit 19d3f5856a5e7533ccb547dfde54daf12db4836c
+Author: Mathis Beer <Mathis.Beer@funkwerk-itk.com>
+Date:   Wed Jul 3 11:11:59 2024 +0200
+
+    Golf options parsing using compile-time introspection.
+
+commit a89109ce86ec05fe2b0bf6ae1bae7350ff60a5af
+Author: Brian Callahan <bcallah@openbsd.org>
+Date:   Tue Jul 2 19:02:04 2024 -0400
+
+    repology-1.1.0
+    Additional colors for status based on upstream.
+
+commit 71f37be0f5c6014e99000c25d509713d3be8024e
+Author: Brian Callahan <bcallah@openbsd.org>
+Date:   Wed Jun 12 10:30:49 2024 -0400
+
+    Initial commit of repology

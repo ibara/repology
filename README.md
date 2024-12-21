@@ -2,10 +2,11 @@ repology
 ========
 `repology` is a command line interface for Repology.org.
 It is primarily designed for
-[OpenBSD](https://www.openbsd.org/),
-[FreeBSD](https://www.freebsd.org/),
+[OpenBSD](https://openbsd.org/),
+[FreeBSD](https://freebsd.org/),
+[NetBSD](https://netbsd.org/),
 and
-[NetBSD](https://www.netbsd.org/)
+[macOS](https://apple.com/)
 developers, users, and port maintainers.
 
 It is written in
@@ -43,7 +44,7 @@ Get information on the Digital Mars D compiler from all repositories:
 * `repology --all dmd`
 
 Get 200 items from pkgsrc:
-* `repology --repo pkgsrc`
+* `repology --repo pkgsrc_current`
 
 Get information about both Chrome and Firefox from FreeBSD ports:
 * `repology --repo freebsd chromium firefox`

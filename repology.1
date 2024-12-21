@@ -15,7 +15,7 @@
 .\" ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 .\" OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 .\"
-.Dd July 5, 2024
+.Dd December 21, 2024
 .Dt REPOLOGY 1
 .Os
 .Sh NAME
@@ -31,17 +31,12 @@ is a utility that retrieves package information from Repology.org.
 .Pp
 By default,
 .Nm
-retrieves information for
-.Ox
-ports, unless you are on
-.Fx
-or
-.Nx ,
-in which case
-.Nm
-will retrieve information for
-.Fx
-ports or pkgsrc, respectively.
+selects an appropriate repository based on your operating system:
+.Pp
+.Dl FreeBSD Ar freebsd
+.Dl macOS Ar homebrew
+.Dl NetBSD Ar pkgsrc_current
+.Dl OpenBSD Ar openbsd
 .Pp
 .Nm
 returns information in the following format:
@@ -61,7 +56,7 @@ returns up to 200 items in a single API call.
 The options are as follows:
 .Bl -tag -width Ds
 .It Fl -repo Ar REPO
-Override default repository selection with
+Override repository selection with
 .Ar REPO .
 .It Fl -begin Ar PROJECT
 Get up to 200 projects starting with
@@ -83,7 +78,7 @@ If this option is not issued,
 .Ar REPO
 will be set to the value of
 .Fl -repo
-or the default repository if the
+or the auto-detected repository if the
 .Fl -repo
 option is also not issued.
 .It Fl -notinrepo Ar REPO
@@ -154,7 +149,8 @@ The
 .Nm
 utility exits 0 on success, and >0 if an error occurs.
 .Sh EXAMPLES
-Get information on the Digital Mars D compiler from the default repository:
+Get information on the Digital Mars D compiler from the auto-detected
+repository:
 .Pp
 .Dl repology dmd
 .Pp
@@ -176,6 +172,8 @@ Get up to 200 packages maintained by ports@openbsd.org,
 starting with coreutils:
 .Pp
 .Dl repology --maintainer ports@openbsd.org --begin coreutils
+.Sh CAVEATS
+Not all repositories may contain all information.
 .Sh AUTHORS
 .Nm
 was written by
