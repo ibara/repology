@@ -1,43 +1,26 @@
 repology
 ========
-`repology` is a command line interface for Repology.org.
-It is primarily designed for
-[OpenBSD](https://openbsd.org/),
-[FreeBSD](https://freebsd.org/),
-[NetBSD](https://netbsd.org/),
-and
-[macOS](https://apple.com/)
-developers, users, and port maintainers.
-
-It is written in
+`repology` is a command line interface for
+[Repology.org](https://repology.org/)
+written in
 [D](https://dlang.org/).
+
+`repology` will attempt to autodetect your operating system for
+selecting a repository when `--repo` is not specified. This
+autodetection works for the BSDs, macOS, and Windows.
 
 Building
 --------
-If you are using
-[DMD](https://wiki.dlang.org/DMD):
 ```sh
+$ ./configure
 $ make
-$ sudo make install
-```
-
-If you are using
-[LDC](https://wiki.dlang.org/LDC):
-```sh
-$ make DMD=ldmd2
-$ sudo make install
-```
-
-If you are using
-[GDC](https://wiki.dlang.org/GDC):
-```sh
-$ make DMD=gdc DFLAGS='-O2 -pipe -frelease -finline -o repology'
 $ sudo make install
 ```
 
 Usage examples
 --------------
-Get information on the Digital Mars D compiler from the default repository:
+Get information on the Digital Mars D compiler from your operating
+system's autodetected repository:
 * `repology dmd`
 
 Get information on the Digital Mars D compiler from all repositories:

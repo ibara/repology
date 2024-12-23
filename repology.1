@@ -15,7 +15,7 @@
 .\" ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 .\" OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 .\"
-.Dd December 21, 2024
+.Dd December 23, 2024
 .Dt REPOLOGY 1
 .Os
 .Sh NAME
@@ -37,6 +37,11 @@ selects an appropriate repository based on your operating system:
 .Dl macOS Ar homebrew
 .Dl NetBSD Ar pkgsrc_current
 .Dl OpenBSD Ar openbsd
+.Dl Windows Ar chocolatey
+.Pp
+Linux users will need to specify their repository with the
+.Fl -repo
+flag.
 .Pp
 .Nm
 returns information in the following format:
@@ -136,11 +141,12 @@ The package is up to date.
 .It Red
 The package is outdated.
 .It Cyan
-The package is either a development version or unique to this repo.
+The package is either a development version, unique to this repo,
+or a rolling release.
 .It Yellow
 The package is a legacy version.
 .It Magenta
-The package has no known versioning scheme or is a rolling release.
+The package has no known versioning scheme.
 .It Blue
 The package version is incorrect, untrusted, or otherwise ignored.
 .El
@@ -172,9 +178,12 @@ Get up to 200 packages maintained by ports@openbsd.org,
 starting with coreutils:
 .Pp
 .Dl repology --maintainer ports@openbsd.org --begin coreutils
-.Sh CAVEATS
-Not all repositories may contain all information.
+.Sh SEE ALSO
+The repology API documentation can be found at
+.Lk https://repology.org/api/v1 .
 .Sh AUTHORS
 .Nm
 was written by
 .An Brian Callahan Aq Mt bcallah@openbsd.org .
+.Sh CAVEATS
+Not all repositories may contain all information.

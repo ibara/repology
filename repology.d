@@ -45,7 +45,7 @@ struct Options
          vers;
 }
 
-void main(string[] args)
+int main(string[] args)
 {
     Options options;
     JSONValue json;
@@ -53,10 +53,16 @@ void main(string[] args)
     string uri = "https://repology.org/api/v1/project";
     string[string] queryParts = null;
 
-    version (FreeBSD) options.repo = "freebsd";
+    version (OpenBSD) options.repo = "openbsd";
+    else version (FreeBSD) options.repo = "freebsd";
     else version (NetBSD) options.repo = "pkgsrc_current";
     else version (OSX) options.repo = "homebrew";
-    else options.repo = "openbsd";
+    else version (Windows) options.repo = "chocolatey";
+    else
+    {
+        stderr.writeln("repology: specify your repo with the --repo flag");
+        return 1;
+    }
 
     auto opts = getopt(
         args,
@@ -83,12 +89,12 @@ void main(string[] args)
     if (opts.helpWanted) {
         defaultGetoptPrinter("usage: repology [options] [package ...]",
             opts.options);
-        return;
+        return 1;
     }
 
     if (options.vers) {
-        writeln("1.4.0 (21 Dec 2024)");
-        return;
+        writeln("1.5.0 (23 Dec 2024)");
+        return 1;
     }
 
     if (options.repo == "pkgsrc")
@@ -134,6 +140,8 @@ void main(string[] args)
         if (!pkg.empty)
             writeln(pkg);
     }
+
+    return 0;
 }
 
 string[] process(JSONValue json, Options options)
@@ -141,7 +149,17 @@ string[] process(JSONValue json, Options options)
     JSONValue[] j;
     string[] info;
     string latest;
-    bool havelatest;
+    bool hasmaintainer, havelatest;
+
+    switch (options.repo) {
+    case "freebsd":
+    case "openbsd":
+    case "pkgsrc_current":
+        hasmaintainer = true;
+        break;
+    default:
+        hasmaintainer = false;
+    }
 
     foreach (obj; json.array) {
         switch (obj["status"].str) {
@@ -188,7 +206,10 @@ string[] process(JSONValue json, Options options)
         if (!options.all) {
             if (options.sort_package)
                 tmp ~= obj["binname"].str ~ " ";
-            tmp ~= obj["srcname"].str ~ " ";
+            if (options.repo == "chocolatey")
+                tmp ~= obj["binname"].str ~ " ";
+            else
+                tmp ~= obj["srcname"].str ~ " ";
         }
         string color;
         switch (obj["status"].str) {
@@ -218,7 +239,7 @@ string[] process(JSONValue json, Options options)
             color = "32";
         }
         string ver = "\033[" ~ color ~ "m" ~ obj["version"].str ~ "\033[0m";
-        if (!options.all && options.repo != "homebrew") {
+        if (!options.all && hasmaintainer) {
             string maintainer = "";
             auto maintainers = obj["maintainers"].array;
             foreach (i; 0 .. maintainers.length) {
