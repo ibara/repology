@@ -1,4 +1,13 @@
-commit 428f5ae73bf5342c315e7e74883a5341deba59ac
+commit 2d721a79b44fdbff058820bdac57a2c1ae63885e
+Author: Brian Callahan <bcallah@openbsd.org>
+Date:   Mon Dec 23 13:51:05 2024 -0500
+
+    Repology 1.5.0
+    Add autodetection for Windows, selecting cholocatey.
+    Add a configure script to make packaging much easier.
+    Improve documentation in manual page and README.md
+
+commit c73c12c82d6412ecc3f529efdaf45c95f89ca12a
 Author: Brian Callahan <bcallah@openbsd.org>
 Date:   Sat Dec 21 11:53:43 2024 -0500
 
