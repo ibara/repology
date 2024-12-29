@@ -58,10 +58,40 @@ int main(string[] args)
     else version (NetBSD) options.repo = "pkgsrc_current";
     else version (OSX) options.repo = "homebrew";
     else version (Windows) options.repo = "chocolatey";
-    else
-    {
+    else version (linux) {
+        import std.process;
+        import std.string;
+        string[] lines;
+        string distro, relid;
+        auto p = pipeProcess(["cat", "/etc/os-release"], Redirect.stdout);
+        scope(exit) wait(p.pid);
+        foreach (line; p.stdout.byLine)
+            lines ~= line.idup;
+        foreach (line; lines) {
+            if (line.startsWith("ID=")) {
+                auto id = line.split("=");
+                distro = id[1].idup;
+            } else if (line.startsWith("VERSION_ID=")) {
+                auto versionid = line.split("=");
+                relid = versionid[1].idup;
+            }
+        }
+        switch (distro) {
+        case "debian":
+            options.repo = distro ~ "_" ~ relid.strip("\"");
+            break;
+        case "fedora":
+            options.repo = distro ~ "_" ~ relid;
+            break;
+        case "ubuntu":
+            options.repo = distro ~ "_" ~
+                relid.strip("\"").replaceFirst(".", "_");
+            break;
+        default:
+            stderr.writeln("repology: specify your repo with the --repo flag");
+        }
+    } else {
         stderr.writeln("repology: specify your repo with the --repo flag");
-        return 1;
     }
 
     auto opts = getopt(
@@ -93,7 +123,7 @@ int main(string[] args)
     }
 
     if (options.vers) {
-        writeln("1.5.0 (23 Dec 2024)");
+        writeln("1.6.0 (29 Dec 2024)");
         return 1;
     }
 

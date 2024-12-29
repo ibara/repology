@@ -15,7 +15,7 @@
 .\" ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 .\" OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 .\"
-.Dd December 23, 2024
+.Dd December 29, 2024
 .Dt REPOLOGY 1
 .Os
 .Sh NAME
@@ -33,13 +33,16 @@ By default,
 .Nm
 selects an appropriate repository based on your operating system:
 .Pp
+.Dl Debian Ar debian_ Ns Ar <release>
+.Dl Fedora Ar fedora_ Ns Ar <release>
 .Dl FreeBSD Ar freebsd
 .Dl macOS Ar homebrew
 .Dl NetBSD Ar pkgsrc_current
 .Dl OpenBSD Ar openbsd
+.Dl Ubuntu Ar ubuntu_ Ns Ar <releaseYear>_<releaseMonth>
 .Dl Windows Ar chocolatey
 .Pp
-Linux users will need to specify their repository with the
+All other users will need to specify their repository with the
 .Fl -repo
 flag.
 .Pp
