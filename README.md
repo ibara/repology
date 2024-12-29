@@ -10,7 +10,7 @@ selecting a repository when `--repo` is not specified. This
 autodetection works for the BSDs, macOS, and Windows.
 
 Autodetection works partially for Linux-based operating systems.
-Currently, Debian, Fedora, and Ubuntu are autodetected.
+Currently, Alpine, Debian, Fedora, and Ubuntu are autodetected.
 
 Building
 --------

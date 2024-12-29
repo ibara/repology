@@ -77,6 +77,9 @@ int main(string[] args)
             }
         }
         switch (distro) {
+        case "alpine":
+            options.repo = distro ~ "_edge";
+            break;
         case "debian":
             options.repo = distro ~ "_" ~ relid.strip("\"");
             break;
@@ -123,7 +126,7 @@ int main(string[] args)
     }
 
     if (options.vers) {
-        writeln("1.6.0 (29 Dec 2024)");
+        writeln("1.7.0 (29 Dec 2024)");
         return 1;
     }
 
@@ -182,6 +185,15 @@ string[] process(JSONValue json, Options options)
     bool hasmaintainer, havelatest;
 
     switch (options.repo) {
+    case "alpine_3_20":
+    case "alpine_3_21":
+    case "alpine_edge":
+    case "debian_10":
+    case "debian_11":
+    case "debian_12":
+    case "debian_13":
+    case "debian_experimental":
+    case "debian_unstable":
     case "freebsd":
     case "openbsd":
     case "pkgsrc_current":
