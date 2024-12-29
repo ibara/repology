@@ -1,3 +1,16 @@
+commit 7c7a214d4507ad1ad7ce1d305774b595ab3e0c8b
+Author: Brian Callahan <bcallah@openbsd.org>
+Date:   Sun Dec 29 16:23:03 2024 -0500
+
+    Repology 1.6.0
+    Add autodetection for Fedora, Debian, and Ubuntu.
+
+commit ce74d27918a08e6e8ef06fd8e92fafca8c5193b6
+Author: Brian Callahan <bcallah@openbsd.org>
+Date:   Mon Dec 23 13:52:43 2024 -0500
+
+    Update NEWS in preparation for release.
+
 commit 2d721a79b44fdbff058820bdac57a2c1ae63885e
 Author: Brian Callahan <bcallah@openbsd.org>
 Date:   Mon Dec 23 13:51:05 2024 -0500
