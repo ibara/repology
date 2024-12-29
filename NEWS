@@ -1,3 +1,16 @@
+commit a40f7f3641b255d2e5186558ee7240eed1f2029d
+Author: Brian Callahan <bcallah@openbsd.org>
+Date:   Sun Dec 29 17:11:00 2024 -0500
+
+    Repology 1.7.0
+    Support Alpine Linux.
+
+commit 7cf43aa2aeca2beb77441f4d62d6c53919f7765f
+Author: Brian Callahan <bcallah@openbsd.org>
+Date:   Sun Dec 29 16:26:09 2024 -0500
+
+    Update NEWS in preparation for release.
+
 commit 7c7a214d4507ad1ad7ce1d305774b595ab3e0c8b
 Author: Brian Callahan <bcallah@openbsd.org>
 Date:   Sun Dec 29 16:23:03 2024 -0500
