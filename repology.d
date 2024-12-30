@@ -61,19 +61,16 @@ int main(string[] args)
     else version (linux) {
         import std.process;
         import std.string;
-        string[] lines;
-        string distro, relid;
+        string distro, release;
         auto p = pipeProcess(["cat", "/etc/os-release"], Redirect.stdout);
         scope(exit) wait(p.pid);
-        foreach (line; p.stdout.byLine)
-            lines ~= line.idup;
-        foreach (line; lines) {
+        foreach (line; p.stdout.byLine) {
             if (line.startsWith("ID=")) {
                 auto id = line.split("=");
                 distro = id[1].idup;
             } else if (line.startsWith("VERSION_ID=")) {
                 auto versionid = line.split("=");
-                relid = versionid[1].idup;
+                release = versionid[1].idup;
             }
         }
         switch (distro) {
@@ -81,14 +78,14 @@ int main(string[] args)
             options.repo = distro ~ "_edge";
             break;
         case "debian":
-            options.repo = distro ~ "_experimental";
+            options.repo = distro ~ "_unstable";
             break;
         case "fedora":
             options.repo = distro ~ "_rawhide";
             break;
         case "ubuntu":
             options.repo = distro ~ "_" ~
-                relid.strip("\"").replaceFirst(".", "_");
+                release.strip("\"").replaceFirst(".", "_");
             break;
         default:
             stderr.writeln("repology: specify your repo with the --repo flag");
@@ -126,7 +123,7 @@ int main(string[] args)
     }
 
     if (options.vers) {
-        writeln("1.7.2 (29 Dec 2024)");
+        writeln("1.7.3 (29 Dec 2024)");
         return 1;
     }
 
@@ -135,7 +132,7 @@ int main(string[] args)
         options.repo = "alpine_edge";
         break;
     case "debian":
-        options.repo = "debian_experimental";
+        options.repo = "debian_unstable";
         break;
     case "fedora":
         options.repo = "fedora_rawhide";
