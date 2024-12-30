@@ -81,10 +81,10 @@ int main(string[] args)
             options.repo = distro ~ "_edge";
             break;
         case "debian":
-            options.repo = distro ~ "_" ~ relid.strip("\"");
+            options.repo = distro ~ "_experimental";
             break;
         case "fedora":
-            options.repo = distro ~ "_" ~ relid;
+            options.repo = distro ~ "_rawhide";
             break;
         case "ubuntu":
             options.repo = distro ~ "_" ~
@@ -126,12 +126,26 @@ int main(string[] args)
     }
 
     if (options.vers) {
-        writeln("1.7.0 (29 Dec 2024)");
+        writeln("1.7.1 (29 Dec 2024)");
         return 1;
     }
 
-    if (options.repo == "pkgsrc")
+    switch (options.repo) {
+    case "alpine":
+        options.repo = "alpine_edge";
+        break;
+    case "debian":
+        options.repo = "debian_experimental";
+        break;
+    case "fedora":
+        options.repo = "fedora_rawhide";
+        break;
+    case "pkgsrc":
         options.repo = "pkgsrc_current";
+        break;
+    default:
+        {}
+    }
 
     if (!options.all) {
         if (!options.inrepo)
