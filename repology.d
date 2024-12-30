@@ -126,7 +126,7 @@ int main(string[] args)
     }
 
     if (options.vers) {
-        writeln("1.7.1 (29 Dec 2024)");
+        writeln("1.7.2 (29 Dec 2024)");
         return 1;
     }
 
@@ -211,6 +211,12 @@ string[] process(JSONValue json, Options options)
     case "freebsd":
     case "openbsd":
     case "pkgsrc_current":
+    case "ubuntu_24_04":
+    case "ubuntu_24_04_backports":
+    case "ubuntu_24_10":
+    case "ubuntu_24_10_backports":
+    case "ubuntu_25_04":
+    case "ubuntu_25_04_proposed":
         hasmaintainer = true;
         break;
     default:
