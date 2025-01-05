@@ -59,12 +59,11 @@ int main(string[] args)
     else version (OSX) options.repo = "homebrew";
     else version (Windows) options.repo = "chocolatey";
     else version (linux) {
-        import std.process;
+        import std.file;
         import std.string;
         string distro, release;
-        auto p = pipeProcess(["cat", "/etc/os-release"], Redirect.stdout);
-        scope(exit) wait(p.pid);
-        foreach (line; p.stdout.byLine) {
+        string[] lines = splitLines(cast(string)read("/etc/os-release"));
+        foreach (line; lines) {
             if (line.startsWith("ID=")) {
                 auto id = line.split("=");
                 distro = id[1].idup;
