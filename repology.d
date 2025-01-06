@@ -1,5 +1,5 @@
 /+
- + Copyright (c) 2024 Brian Callahan <bcallah@openbsd.org>
+ + Copyright (c) 2024-2025 Brian Callahan <bcallah@openbsd.org>
  +
  + Permission to use, copy, modify, and distribute this software for any
  + purpose with or without fee is hereby granted, provided that the above
@@ -58,7 +58,19 @@ int main(string[] args)
     else version (NetBSD) options.repo = "pkgsrc_current";
     else version (OSX) options.repo = "homebrew";
     else version (Windows) options.repo = "chocolatey";
-    else version (linux) {
+    else version (Solaris) {
+        import std.file;
+        import std.string;
+        string[] lines = splitLines(cast(string)read("/etc/release"));
+        foreach (line; lines) {
+            if (line.stripLeft.startsWith("OpenIndiana")) {
+                options.repo = "openindiana";
+                break;
+            }
+        }
+        if (!options.repo)
+            stderr.writeln("repology: specify your repo with the --repo flag");
+    } else version (linux) {
         import std.file;
         import std.string;
         string distro, release;
@@ -122,7 +134,7 @@ int main(string[] args)
     }
 
     if (options.vers) {
-        writeln("1.7.3 (29 Dec 2024)");
+        writeln("1.8.0 (5 Jan 2025)");
         return 1;
     }
 

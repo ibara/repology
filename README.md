@@ -12,6 +12,9 @@ autodetection works for the BSDs, macOS, and Windows.
 Autodetection works partially for Linux-based operating systems.
 Currently, Alpine, Debian, Fedora, and Ubuntu are autodetected.
 
+Autodetection works partially for Illumos-based operating systems.
+Currently, OpenIndiana is autodetected.
+
 Building
 --------
 ```sh
