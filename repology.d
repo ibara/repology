@@ -94,6 +94,9 @@ int main(string[] args)
         case "fedora":
             options.repo = distro ~ "_rawhide";
             break;
+        case "gentoo":
+            options.repo = distro;
+            break;
         case "ubuntu":
             options.repo = distro ~ "_" ~
                 release.strip("\"").replaceFirst(".", "_");
@@ -134,7 +137,7 @@ int main(string[] args)
     }
 
     if (options.vers) {
-        writeln("1.8.0 (5 Jan 2025)");
+        writeln("1.9.0 (10 Feb 2025)");
         return 1;
     }
 
@@ -217,6 +220,7 @@ string[] process(JSONValue json, Options options)
     case "debian_experimental":
     case "debian_unstable":
     case "freebsd":
+    case "gentoo":
     case "openbsd":
     case "pkgsrc_current":
     case "ubuntu_24_04":
