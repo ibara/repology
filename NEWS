@@ -1,3 +1,30 @@
+commit 9ea600063f317857342d7358ba43ae2aebe1b78c
+Author: Brian Callahan <bcallah@openbsd.org>
+Date:   Mon Feb 10 20:59:01 2025 -0500
+
+    Repology 1.9.0
+    Add Gentoo
+
+commit 87286b47496f1255fece927f45206b45ce381467
+Author: Brian Callahan <bcallah@openbsd.org>
+Date:   Sun Jan 5 20:35:31 2025 -0500
+
+    Repology 1.8.0
+    Support OpenIndiana
+    Simplify linux autodetection
+
+commit 41db3bccce0c634d04f3e27701424f978453a967
+Author: Brian Callahan <bcallah@openbsd.org>
+Date:   Sun Jan 5 18:59:17 2025 -0500
+
+    Read in /etc/os-release directly
+
+commit 3af0dbfaf3095331529697eb9b9c2a69985a340a
+Author: Brian Callahan <bcallah@openbsd.org>
+Date:   Sun Dec 29 20:12:11 2024 -0500
+
+    Update NEWS in preparation for release.
+
 commit 993f2eed92d11129d6d0d85c2dc4da6a9c163792
 Author: Brian Callahan <bcallah@openbsd.org>
 Date:   Sun Dec 29 20:11:09 2024 -0500
