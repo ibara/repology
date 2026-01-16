@@ -55,14 +55,14 @@ EOF
   if [ $specifieddflags -eq 0 ] ; then
     case "$is" in
       "dmd")
-        dflags="-O -release -inline"
+        dflags="-O -inline"
         ;;
       "gdc")
-        dflags="-O2 -pipe -frelease -finline"
+        dflags="-O2 -pipe -finline"
         oflag="-o repology"
         ;;
       "ldc")
-        dflags="-O -release"
+        dflags="-O"
         ;;
     esac
   fi
