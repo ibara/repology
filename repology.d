@@ -100,6 +100,9 @@ int main(string[] args)
                 options.repo = distro ~ "_" ~
                     release.strip("\"").replaceFirst(".", "_");
                 break;
+            case "slackware":
+                options.repo = "slackbuilds";
+                break;
             }
         } catch (std.file.FileException) {}
     }
