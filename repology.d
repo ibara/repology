@@ -68,43 +68,47 @@ int main(string[] args)
                 break;
             }
         }
+        if (!options.repo)
+            stderr.writeln("repology: specify your repo with the --repo flag");
     } else version (linux) {
         import std.file;
         import std.string;
         string distro, release;
-        try {
-            string[] lines = splitLines(cast(string)read("/etc/os-release"));
-            foreach (line; lines) {
-                if (line.startsWith("ID=")) {
-                    auto id = line.split("=");
-                    distro = id[1].idup;
-                } else if (line.startsWith("VERSION_ID=")) {
-                    auto versionid = line.split("=");
-                    release = versionid[1].idup;
-                }
+        string[] lines = splitLines(cast(string)read("/etc/os-release"));
+        foreach (line; lines) {
+            if (line.startsWith("ID=")) {
+                auto id = line.split("=");
+                distro = id[1].idup;
+            } else if (line.startsWith("VERSION_ID=")) {
+                auto versionid = line.split("=");
+                release = versionid[1].idup;
             }
-            final switch (distro) {
-            case "alpine":
-                options.repo = distro ~ "_edge";
-                break;
-            case "debian":
-                options.repo = distro ~ "_unstable";
-                break;
-            case "fedora":
-                options.repo = distro ~ "_rawhide";
-                break;
-            case "gentoo":
-                options.repo = distro;
-                break;
-            case "ubuntu":
-                options.repo = distro ~ "_" ~
-                    release.strip("\"").replaceFirst(".", "_");
-                break;
-            case "slackware":
-                options.repo = "slackbuilds";
-                break;
-            }
-        } catch (std.file.FileException) {}
+        }
+        switch (distro) {
+        case "alpine":
+            options.repo = distro ~ "_edge";
+            break;
+        case "debian":
+            options.repo = distro ~ "_unstable";
+            break;
+        case "fedora":
+            options.repo = distro ~ "_rawhide";
+            break;
+        case "gentoo":
+            options.repo = distro;
+            break;
+        case "ubuntu":
+            options.repo = distro ~ "_" ~
+                release.strip("\"").replaceFirst(".", "_");
+            break;
+        case "slackware":
+            options.repo = "slackbuilds";
+            break;
+        default:
+            stderr.writeln("repology: specify your repo with the --repo flag");
+        }
+    } else {
+        stderr.writeln("repology: specify your repo with the --repo flag");
     }
 
     auto opts = getopt(
@@ -137,11 +141,6 @@ int main(string[] args)
 
     if (options.vers) {
         writeln("1.9.0 (10 Feb 2025)");
-        return 1;
-    }
-
-    if (!options.repo) {
-        stderr.writeln("repology: specify your repo with the --repo flag");
         return 1;
     }
 
@@ -286,8 +285,10 @@ string[] process(JSONValue json, Options options)
                 tmp ~= obj["binname"].str ~ " ";
             if (options.repo == "chocolatey")
                 tmp ~= obj["binname"].str ~ " ";
-            else
+            else if ("srcname" in obj)
                 tmp ~= obj["srcname"].str ~ " ";
+            else
+                tmp ~= obj["visiblename"].str ~ " ";
         }
         string color;
         switch (obj["status"].str) {
