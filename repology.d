@@ -83,7 +83,7 @@ int main(string[] args)
                     release = versionid[1].idup;
                 }
             }
-            final switch (distro) {
+            switch (distro) {
             case "alpine":
                 options.repo = distro ~ "_edge";
                 break;
@@ -99,6 +99,11 @@ int main(string[] args)
             case "ubuntu":
                 options.repo = distro ~ "_" ~
                     release.strip("\"").replaceFirst(".", "_");
+                break;
+            case "slackware":
+                options.repo = "slackbuilds";
+                break;
+            default:
                 break;
             }
         } catch (std.file.FileException) {}
@@ -177,19 +182,25 @@ int main(string[] args)
     }
 
     string query = "?" ~ queryParts.byKeyValue.map!(a => a.key ~ "=" ~ a.value).join("&");
+
+    // Repology rejects the default libcurl User-Agent with HTTP 403, so
+    // identify this client explicitly with the URL of the repo as requested.
+    auto http = HTTP();
+    http.addRequestHeader("User-Agent", "https://github.com/ibara/repology");
+
     if (args.length == 1) {
         uri ~= "s/";
         if (options.begin)
             uri ~= options.begin ~ "/";
         else if (options.end)
             uri ~= ".." ~ options.end ~ "/";
-        auto res = get(uri ~ query);
+        auto res = get(uri ~ query, http);
         json = parseJSON(res);
         foreach (obj; json.object)
             pkgs ~= process(obj, options);
     } else {
         foreach (arg; args[1 .. $]) {
-            auto res = get(uri ~ "/" ~ arg ~ query);
+            auto res = get(uri ~ "/" ~ arg ~ query, http);
             json = parseJSON(res);
             pkgs ~= process(json, options);
         }
@@ -283,8 +294,10 @@ string[] process(JSONValue json, Options options)
                 tmp ~= obj["binname"].str ~ " ";
             if (options.repo == "chocolatey")
                 tmp ~= obj["binname"].str ~ " ";
-            else
+            else if ("srcname" in obj)
                 tmp ~= obj["srcname"].str ~ " ";
+            else
+                tmp ~= obj["visiblename"].str ~ " ";
         }
         string color;
         switch (obj["status"].str) {
