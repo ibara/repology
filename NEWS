@@ -1,3 +1,42 @@
+commit 8d0acd574006ba5c0ee59ac3066fca60762f64eb
+Author: Brian Callahan <bcallah@openbsd.org>
+Date:   Sun Jun 7 19:19:24 2026 -0400
+
+    Repology 1.10.0
+    Add Slackware; also fix User-Agent string as per upstream's rules
+    Fix #4
+
+commit 17f5be2146219a53e19f8c0d057658f307a83b54
+Author: Brian Callahan <ibara@users.noreply.github.com>
+Date:   Thu Jan 15 23:39:51 2026 -0500
+
+    Remove 'release' flag from compiler options
+    
+    The release flag apparently disables runtime bounds checking.
+
+commit 97f74de2555a915a78591f5603d6eade13719953
+Merge: 31def69 8b5535f
+Author: Brian Callahan <ibara@users.noreply.github.com>
+Date:   Thu Nov 20 21:42:26 2025 -0500
+
+    Merge pull request #2 from yabobay/missing-os-release-file
+    
+    Run on systems missing os-release file
+
+commit 8b5535f1d5fe72883d34ddc1b113d93a3a621dbd
+Author: yabobay <yabobay@yahoo.com>
+Date:   Wed Nov 19 16:26:40 2025 +0200
+
+    Run on systems missing os-release file
+    
+    Also makes the code a bit more DRY-er.
+
+commit 31def69eb6582203aa64b0f189f3460f452c5ecf
+Author: Brian Callahan <bcallah@openbsd.org>
+Date:   Mon Feb 10 21:01:54 2025 -0500
+
+    Update NEWS in preparation for release.
+
 commit 9ea600063f317857342d7358ba43ae2aebe1b78c
 Author: Brian Callahan <bcallah@openbsd.org>
 Date:   Mon Feb 10 20:59:01 2025 -0500
