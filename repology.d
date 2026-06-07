@@ -182,19 +182,25 @@ int main(string[] args)
     }
 
     string query = "?" ~ queryParts.byKeyValue.map!(a => a.key ~ "=" ~ a.value).join("&");
+
+    // Repology rejects the default libcurl User-Agent with HTTP 403, so
+    // identify this client explicitly.
+    auto http = HTTP();
+    http.addRequestHeader("User-Agent", "repology-cli");
+
     if (args.length == 1) {
         uri ~= "s/";
         if (options.begin)
             uri ~= options.begin ~ "/";
         else if (options.end)
             uri ~= ".." ~ options.end ~ "/";
-        auto res = get(uri ~ query);
+        auto res = get(uri ~ query, http);
         json = parseJSON(res);
         foreach (obj; json.object)
             pkgs ~= process(obj, options);
     } else {
         foreach (arg; args[1 .. $]) {
-            auto res = get(uri ~ "/" ~ arg ~ query);
+            auto res = get(uri ~ "/" ~ arg ~ query, http);
             json = parseJSON(res);
             pkgs ~= process(json, options);
         }
