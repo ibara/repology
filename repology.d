@@ -50,7 +50,7 @@ int main(string[] args)
     Options options;
     JSONValue json;
     string[] pkgs;
-    string uri = "https://repology.org/api/v1/project";
+    string uri = "https://repology.amdmi3.ru/api/v1/project";
     string[string] queryParts = null;
 
     version (OpenBSD) options.repo = "openbsd";
